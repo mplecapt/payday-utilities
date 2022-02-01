@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-paydayutilities-dev-183622-authRole",
+      "UnauthRoleArn": "arn:aws:iam::740474698301:role/amplify-paydayutilities-dev-183622-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::740474698301:role/amplify-paydayutilities-dev-183622-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-paydayutilities-dev-183622-deployment",
+      "UnauthRoleName": "amplify-paydayutilities-dev-183622-unauthRole",
+      "StackName": "amplify-paydayutilities-dev-183622",
+      "StackId": "arn:aws:cloudformation:us-east-2:740474698301:stack/amplify-paydayutilities-dev-183622/9bf980d0-82ee-11ec-a18a-0ab6909011a4",
+      "AmplifyAppId": "d2xgk9i36tc8o7"
+    },
+    "categories": {
+      "function": {
+        "CallSteam": {
+          "deploymentBucketName": "amplify-paydayutilities-dev-183622-deployment",
+          "s3Key": "amplify-builds/CallSteam-6a47324c37456c394c4c-build.zip"
+        }
+      }
+    }
+  }
+}

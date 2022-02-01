@@ -1,38 +1,69 @@
-.App {
-  text-align: center;
+.tooltip {
+	position: relative;
+	display: inline-block;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.tooltip .tooltiptext {
+	visibility: hidden;
+	width: 180px;
+	color: #fff;
+	text-align: center;
+	border-radius: 6px;
+	padding: 5px 5px 10px 5px;
+	position: absolute;
+	z-index: 1;
+	top: 100%;
+	left: 50%;
+	margin-left: -96px;
+	background-color: #222;
+	border: 1px dotted white;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.tooltip .tooltiptext::after {
+	content: "";
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 8px;
+	border-style: solid;
+	border-color: transparent transparent #fff transparent;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.tooltip:hover .tooltiptext {
+	visibility: visible;
 }
 
-.App-link {
-  color: #61dafb;
+.progress-list {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.card {
+	width: 200px;
+	height: 300px;
+	margin: 5px;
+	padding: 20px 5px 5px 5px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	border-radius: 6px;
+	background-color: rgb(36, 37, 53);
+	color: white;
+}
+
+.card img {
+	width: 100px;
+	height: 100px;
+	padding: 3px;
+}
+
+.card .display-name {
+	height: 100px;
 }

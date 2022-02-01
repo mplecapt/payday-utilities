@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/call/{function}/{version}/{apikey}/{appid}/{steamid}": {
+      "name": "/call/{function}/{version}/{apikey}/{appid}/{steamid}",
+      "lambdaFunction": "CallSteam",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}
