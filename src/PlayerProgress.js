@@ -22,7 +22,17 @@ export default class PlayerProgress extends Component {
 		if (!this.state.progress) return <h3>Loading...</h3>
 		return (
 			<div className='progress-list'>
-				{this.state.progress.achievements.map(a => (
+				{this.state.progress.achievements.filter(a => {
+					const filter = this.props.filterBy;
+					return (
+						(filter.removeComplete && !a.achieved) ||
+						!filter.removeComplete
+					) &&
+					(
+						contains(a.displayName, filter.search) ||
+						(!a.hidden && contains(a.description, filter.search))
+					)
+				}).map(a => (
 					<Card key={a.name} data={a} />
 				))}
 			</div>
@@ -30,17 +40,27 @@ export default class PlayerProgress extends Component {
 	}
 }
 
+/*
+	- add markers for different flags (4 man, mission specific, weapon specific, difficulties[not necessary])
+*/
+
+function contains(str1, str2) {
+	return str1.toLowerCase().includes(str2.toLowerCase())
+}
+
 function Card({ data }) {
 	return (
 		<div className='card'>
 			<div className='tooltip'>
 				<img alt={data.name} src={(data.achieved) ? data.icon : data.icongray} />
-				<span className='tooltiptext'>{data.description}</span>
+				{data.description && <span className='tooltiptext'>{data.description}</span>}
 			</div>
-			<h3 className='display-name'>{data.displayName}</h3>
-			{data.achieved &&
-			<h4 className='date'>{(new Date(data.unlocktime * 1000)).toLocaleString()}</h4>
-			}
+			<div className='container'>
+				<h3>{data.displayName}</h3>
+				<h4>
+					{data.achieved && (new Date(data.unlocktime * 1000)).toLocaleString()}
+				</h4>
+			</div>
 		</div>
 	)
 }

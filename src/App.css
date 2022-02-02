@@ -44,26 +44,41 @@
 }
 
 .card {
-	width: 200px;
-	height: 300px;
-	margin: 5px;
-	padding: 20px 5px 5px 5px;
+	width: 20vw;
+	min-width: 350px;
+	margin: 10px;
 	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
+	flex-direction: row;
+	text-align: left;
 	border-radius: 6px;
-	background-color: rgb(36, 37, 53);
+	background-color: rgb(31, 43, 59);
 	color: white;
+	border: 1px dotted #aaa;
+}
+
+.card .container {
+	height: 100px;
+	margin-left: 10px;
 }
 
 .card img {
 	width: 100px;
-	height: 100px;
-	padding: 3px;
+	height: auto;
+	margin: 10px;
 }
 
-.card .display-name {
-	height: 100px;
+.scrollarea {
+	overflow-y: scroll;
+	height: 90vh;
+}
+
+::-webkit-scrollbar {
+	width: 15px;
+}
+::-webkit-scrollbar-thumb {
+	background: #888;
+	border-radius: 7px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: #fff;
 }
