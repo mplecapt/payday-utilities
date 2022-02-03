@@ -52,7 +52,7 @@
 .card {
 	/* sizing */
 	width: 90vw;
-	height: 4em;
+	height: 4.5em;
 	margin: 10px;
 	padding: 10px;
 	/* appearance */
@@ -60,13 +60,18 @@
 	background-color: rgb(31, 43, 59);
 	color: white;
 	border: 1px dotted #aaa;
-	/* layout */
+	display: flex;
+	
+}
+
+.data-container {
+	width: 100%;
 	display: grid;
 	grid-template-rows: 2fr 1fr;
-	grid-template-columns: 4em 1fr;
+	grid-template-columns: 4em 1fr auto;
 	grid-template-areas: 
-		"icon title"
-		"icon date";
+		"icon title tokens"
+		"icon date tokens";
 	align-items: center;
 	justify-items: first baseline;
 	column-gap: 20px;
@@ -94,6 +99,30 @@
 .card-date {
 	grid-area: date;
 	font-size: smaller;
+}
+
+.token-container {
+	grid-area: tokens;
+	width: 3.5em;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+}
+
+.token {
+	width: 1em;
+	height: 1em;
+	text-align: center;
+	padding: 3px;
+	margin: 1px;
+	background-color: rgb(18, 31, 39);
+	border: 1px dashed white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 @media only screen and (min-width: 768px) {
@@ -124,6 +153,11 @@
 
 ::-webkit-scrollbar {
 	width: 15px;
+}
+::-webkit-scrollbar-track {
+	/*background-color: rgba(122, 122, 122, 0.233);*/
+	border: 1px solid rgba(136, 136, 136, 0.4);
+	border-radius: 7px;
 }
 ::-webkit-scrollbar-thumb {
 	background: #888;
