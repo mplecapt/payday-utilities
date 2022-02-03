@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { API } from 'aws-amplify';
-import config from './steam.json';
+import API_KEY from './steam';
 
 export default class PlayerProgress extends Component {
 	constructor(props) {
@@ -19,7 +19,7 @@ export default class PlayerProgress extends Component {
 			console.log("Error! No steamid set");
 			return <></>;
 		}
-		if (!this.state.progress) return <h3>Loading...</h3>
+		if (!this.state.progress) return <h3 style={{color: 'white'}}>Loading...</h3>
 		return (
 			<div className='progress-list'>
 				{this.state.progress.achievements.filter(a => {
@@ -52,15 +52,11 @@ function Card({ data }) {
 	return (
 		<div className='card'>
 			<div className='tooltip'>
-				<img alt={data.name} src={(data.achieved) ? data.icon : data.icongray} />
+				<img className='card-img' alt={data.name} src={(data.achieved) ? data.icon : data.icongray} />
 				{data.description && <span className='tooltiptext'>{data.description}</span>}
 			</div>
-			<div className='container'>
-				<h3>{data.displayName}</h3>
-				<h4>
-					{data.achieved && (new Date(data.unlocktime * 1000)).toLocaleString()}
-				</h4>
-			</div>
+			<span className='card-name'>{data.displayName}</span>
+			<span className='card-date'>{data.achieved && (new Date(data.unlocktime * 1000)).toLocaleString()}</span>
 		</div>
 	)
 }
@@ -71,12 +67,12 @@ function Card({ data }) {
  * @returns a formatted object representing player achievement progress
  */
 async function GetPlayerProgress(userid) {
-	const schema = await API.get('SteamAPI', `/call/GetSchemaForGame/v2/${config.API_KEY}/218620/${userid}`)
+	const schema = await API.get('SteamAPI', `/call/GetSchemaForGame/v2/${API_KEY}/218620/${userid}`)
 		.catch(error => {
 			console.log("Error fetching Schema!", error)
 		})
 	//console.log(schema);
-	const player = await API.get('SteamAPI', `/call/GetPlayerAchievements/v1/${config.API_KEY}/218620/${userid}`)
+	const player = await API.get('SteamAPI', `/call/GetPlayerAchievements/v1/${API_KEY}/218620/${userid}`)
 		.catch(error => {
 			console.log("Error fetching player data!", error)
 		})

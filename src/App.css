@@ -1,3 +1,6 @@
+/**
+ *
+ */
 .tooltip {
 	position: relative;
 	display: inline-block;
@@ -5,16 +8,16 @@
 
 .tooltip .tooltiptext {
 	visibility: hidden;
-	width: 180px;
+	width: 75vw;
 	color: #fff;
-	text-align: center;
+	text-align: left;
 	border-radius: 6px;
 	padding: 5px 5px 10px 5px;
 	position: absolute;
 	z-index: 1;
-	top: 100%;
-	left: 50%;
-	margin-left: -96px;
+	top: 50%;
+	left: 120%;
+	margin-top: -2.5em;
 	background-color: #222;
 	border: 1px dotted white;
 }
@@ -22,18 +25,21 @@
 .tooltip .tooltiptext::after {
 	content: "";
 	position: absolute;
-	bottom: 100%;
-	left: 50%;
-	margin-left: -5px;
+	right: 100%;
+	top: 50%;
+	margin-top: -5px;
 	border-width: 8px;
 	border-style: solid;
-	border-color: transparent transparent #fff transparent;
+	border-color: transparent #fff transparent transparent;
 }
 
 .tooltip:hover .tooltiptext {
 	visibility: visible;
 }
 
+/**
+ * Achievement Progress List
+ */
 .progress-list {
 	width: 100%;
 	display: flex;
@@ -44,29 +50,73 @@
 }
 
 .card {
-	width: 20vw;
-	min-width: 350px;
+	/* sizing */
+	width: 90vw;
+	height: 4em;
 	margin: 10px;
-	display: flex;
-	flex-direction: row;
-	text-align: left;
+	padding: 10px;
+	/* appearance */
 	border-radius: 6px;
 	background-color: rgb(31, 43, 59);
 	color: white;
 	border: 1px dotted #aaa;
+	/* layout */
+	display: grid;
+	grid-template-rows: 2fr 1fr;
+	grid-template-columns: 4em 1fr;
+	grid-template-areas: 
+		"icon title"
+		"icon date";
+	align-items: center;
+	justify-items: first baseline;
+	column-gap: 20px;
 }
 
-.card .container {
-	height: 100px;
-	margin-left: 10px;
+.card-img {
+	height: 100%;
+	width: auto;
 }
 
-.card img {
-	width: 100px;
-	height: auto;
-	margin: 10px;
+.card .tooltip {
+	grid-area: icon;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
 }
 
+.card-name {
+	grid-area: title;
+	font-size: medium;
+	font-weight: bold;
+}
+
+.card-date {
+	grid-area: date;
+	font-size: smaller;
+}
+
+@media only screen and (min-width: 768px) {
+	.card {
+		width: 45vw;
+	}
+	.card .tooltiptext {
+		width: 35vw;
+	}
+}
+
+@media only screen and (min-width: 1920px) {
+	.card {
+		width: 28vw;
+	}
+	.card .tooltiptext {
+		width: 20vw;
+	}
+}
+
+/**
+ * Scrollbar
+ */
 .scrollarea {
 	overflow-y: scroll;
 	height: 90vh;
