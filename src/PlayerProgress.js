@@ -10,45 +10,6 @@ export default class PlayerProgress extends Component {
 
 	async componentDidMount() {
 		let prog = await GetPlayerProgress(this.props.steamid);
-		console.log(prog);
-		/*
-		const tests = [
-			// four man crew
-			{ regx: /.*(four man crew)|(four players)/gi, symbol: '4', value: 'Four man crew required'},
-			// Get Heist name
-			{ regx: /(?<= the )((?!.*(armored)|(plans)|(train)).+?)((?= job[^s])|(?= heist\W))/gi },
-			// Edge: escape heists
-			{ regx: /(?!.*job,)(?<= the ).*? escape(?=,)/gi },
-			// Edge: armored transport general
-			{ regx: /armored transport/gi },
-			// Edge: Not directly named
-			{ regx: /.*(floyd)|(bobblehead bob)/gi, symbol: 'Big Bank', value: 'Big Bank'},
-			{ regx: /Panic Room/gi, symbol: 'Panic Room', value: 'Panic Room'},
-			{ regx: /homeless/gi, symbol: 'Aftershock', value: 'Aftershock'},
-			{ regx: /churro/gi, symbol: "Buluc's Mansion", value: "Buluc's Mansion"},
-
-		]
-		prog.achievements.forEach(a => {
-			// perform each test
-			tests.forEach(t => {
-				const matches = a.description?.match(t.regx);
-				if (matches)
-					// add each match found
-					matches.forEach(m => {
-						const sym = t.symbol ? t.symbol : m;
-						if (sym.includes("Celebrating")) return;
-						// if tokens does not alread contain the new token
-						if (a.tokens.filter(t => t.symbol === sym).length === 0)
-							// add new token
-							a.tokens.push({
-								symbol: sym,
-								value: t.value ? t.value : m
-							})
-					})
-			});
-		});
-		*/
-
 		this.setState({
 			progress: prog
 		})
@@ -115,8 +76,8 @@ function Card({ data }) {
 			</div>
 			{data.tokens && data.tokens.length > 0 && (
 				<div className='token-container'>
-					{data.tokens.map(t => (
-						<span key={t.symbol} className='token'>{t.symbol}</span>
+					{data.tokens.map((t, i) => (
+						<span key={t.symbol + i} className='token'>{t.symbol}</span>
 					))}
 				</div>
 			)}
@@ -142,26 +103,80 @@ async function GetPlayerProgress(userid) {
 	//console.log(player);
 
 	// generate player heist completion progress
-	let progress = [];
+	let heistProgress = {};
+	let heistList = [];
 	const regx = /(?!.*job.+ on)(?:(?<=Complete (?=The ))|(?<=Complete the ))(.*?)(?: job)? on the (.*?) difficulty(?:.*(One Down))*/g;
 	schema.game.availableGameStats.achievements
-		.filter(a => (a.description && regx.test(a.description)))
 		.forEach((a, i) => {
-			const achieved = player.playerstats.achievements[i].achieved === 1;
-			const matches = a.description.match(regx);
+			if (player.playerstats.achievements[i].apiname !== a.name) {
+				console.log('Arrays unaligned!');
+				return;
+			}
+			// edge cases
+			if (
+				!a.description ||
+				a.name === 'dec21_01' ||
+				a.name === 'cac_30' ||
+				a.name === 'fish_4'
+			) return;
 
-			
+			// is it a difficulty achievement
+			const matches = [...a.description.matchAll(regx)];
+			if (!matches || (matches && matches.length === 0)) return;
+
+			// add heist to lists if it isn't there already
+			if (!heistProgress[matches[0][1]]) {
+				heistList.push(matches[0][1]);
+				heistProgress[matches[0][1]] = {
+					name: matches[0][1],
+					complete: {
+						normal: false,
+						hard: false,
+						veryhard: false,
+						overkill: false,
+						mayhem: false,
+						deathwish: false,
+						deathsentence: false,
+						onedown: false
+					}
+				}
+			}
+
+			// update completion for difficulty
+			const achieved = player.playerstats.achievements[i].achieved === 1;
+			const diff = (matches[0][3] ? matches[0][3] : matches[0][2]).toLowerCase().replace(' ', '');
+			heistProgress[matches[0][1]].complete[diff] = achieved;
 		});
 
+	const tests = [
+		{ regx: /(four man crew)|(four players)/gi, symbol: '4', value: '4 man crew required'},
+		// Edge: Not directly named
+		{ regx: /.*(floyd)|(bobblehead bob)/gi, symbol: 'The Big Bank', value: 'The Big Bank'},
+		{ regx: /homeless/gi, symbol: 'Aftershock', value: 'Aftershock'},
+		{ regx: /churro/gi, symbol: "Buluc's Mansion", value: "Buluc's Mansion"},
+		{ regx: /escape/gi, symbol: "Esc", value: "Escape" },
+	]
+
+	// generate achievement information
 	const output = {
 		gameName: player.playerstats.gameName,
 		steamid: player.playerstats.steamID,
-		progress: progress,
+		progress: heistProgress,
 		achievements: schema.game.availableGameStats.achievements.map((a, i) => {
 			if (a.name !== player.playerstats.achievements[i].apiname) {
 				console.log('Achievement list mismatch', a.name, player.playerstats.achievements[i].apiname);
 				return null;
 			}
+
+			const tokens = heistList
+				.filter(h => (new RegExp(h, 'gi').test(a.description)))
+				.map(h => ({ symbol: h, value: h}));
+
+			tests.forEach(t => {
+				if (a.description && t.regx.test(a.description))
+					tokens.push({ symbol: t.symbol, value: t.value });
+			});
+
 			return {
 				name: a.name,
 				displayName: a.displayName,
@@ -171,23 +186,10 @@ async function GetPlayerProgress(userid) {
 				icongray: a.icongray,
 				achieved: player.playerstats.achievements[i].achieved === 1,
 				unlocktime: player.playerstats.achievements[i].unlocktime,
-				tokens: heists.filter(h => (new RegExp(h).test(a.description))).map(h => (
-					{ symbol: h, value: h }
-				))
+				tokens: tokens,
 			}
 		}),
 	}
 
 	return output;
 }
-
-const diffs = [
-	'Normal',
-	'Hard',
-	'Very Hard',
-	'OVERKILL',
-	'Mayhem',
-	'Death Wish',
-	'Death Sentence',
-	'One Down',
-]
