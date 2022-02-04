@@ -77,7 +77,9 @@ function Card({ data }) {
 			{data.tokens && data.tokens.length > 0 && (
 				<div className='token-container'>
 					{data.tokens.map((t, i) => (
-						<span key={t.symbol + i} className='token'>{t.symbol}</span>
+						<span key={t.symbol + i} className='token'>
+							{t.symbol}
+						</span>
 					))}
 				</div>
 			)}
@@ -146,6 +148,7 @@ async function GetPlayerProgress(userid) {
 			const achieved = player.playerstats.achievements[i].achieved === 1;
 			const diff = (matches[0][3] ? matches[0][3] : matches[0][2]).toLowerCase().replace(' ', '');
 			heistProgress[matches[0][1]].complete[diff] = achieved;
+			if (diff === 'deathsentence') heistProgress[matches[0][1]].icon = a.icon;
 		});
 
 	const tests = [
@@ -170,7 +173,7 @@ async function GetPlayerProgress(userid) {
 
 			const tokens = heistList
 				.filter(h => (new RegExp(h, 'gi').test(a.description)))
-				.map(h => ({ symbol: h, value: h}));
+				.map(h => ({ symbol: 'H', value: h, src: heistProgress[h].icon }));
 
 			tests.forEach(t => {
 				if (a.description && t.regx.test(a.description))
