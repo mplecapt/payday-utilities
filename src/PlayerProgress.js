@@ -10,14 +10,23 @@ export default class PlayerProgress extends Component {
 
 	async componentDidMount() {
 		let prog = await GetPlayerProgress(this.props.steamid);
-
+		console.log(prog);
+		/*
 		const tests = [
+			// four man crew
 			{ regx: /.*(four man crew)|(four players)/gi, symbol: '4', value: 'Four man crew required'},
+			// Get Heist name
 			{ regx: /(?<= the )((?!.*(armored)|(plans)|(train)).+?)((?= job[^s])|(?= heist\W))/gi },
+			// Edge: escape heists
 			{ regx: /(?!.*job,)(?<= the ).*? escape(?=,)/gi },
+			// Edge: armored transport general
 			{ regx: /armored transport/gi },
+			// Edge: Not directly named
 			{ regx: /.*(floyd)|(bobblehead bob)/gi, symbol: 'Big Bank', value: 'Big Bank'},
 			{ regx: /Panic Room/gi, symbol: 'Panic Room', value: 'Panic Room'},
+			{ regx: /homeless/gi, symbol: 'Aftershock', value: 'Aftershock'},
+			{ regx: /churro/gi, symbol: "Buluc's Mansion", value: "Buluc's Mansion"},
+
 		]
 		prog.achievements.forEach(a => {
 			// perform each test
@@ -38,6 +47,7 @@ export default class PlayerProgress extends Component {
 					})
 			});
 		});
+		*/
 
 		this.setState({
 			progress: prog
@@ -131,9 +141,22 @@ async function GetPlayerProgress(userid) {
 		})
 	//console.log(player);
 
-	return {
+	// generate player heist completion progress
+	let progress = [];
+	const regx = /(?!.*job.+ on)(?:(?<=Complete (?=The ))|(?<=Complete the ))(.*?)(?: job)? on the (.*?) difficulty(?:.*(One Down))*/g;
+	schema.game.availableGameStats.achievements
+		.filter(a => (a.description && regx.test(a.description)))
+		.forEach((a, i) => {
+			const achieved = player.playerstats.achievements[i].achieved === 1;
+			const matches = a.description.match(regx);
+
+			
+		});
+
+	const output = {
 		gameName: player.playerstats.gameName,
 		steamid: player.playerstats.steamID,
+		progress: progress,
 		achievements: schema.game.availableGameStats.achievements.map((a, i) => {
 			if (a.name !== player.playerstats.achievements[i].apiname) {
 				console.log('Achievement list mismatch', a.name, player.playerstats.achievements[i].apiname);
@@ -148,8 +171,23 @@ async function GetPlayerProgress(userid) {
 				icongray: a.icongray,
 				achieved: player.playerstats.achievements[i].achieved === 1,
 				unlocktime: player.playerstats.achievements[i].unlocktime,
-				tokens: []
+				tokens: heists.filter(h => (new RegExp(h).test(a.description))).map(h => (
+					{ symbol: h, value: h }
+				))
 			}
-		})
+		}),
 	}
+
+	return output;
 }
+
+const diffs = [
+	'Normal',
+	'Hard',
+	'Very Hard',
+	'OVERKILL',
+	'Mayhem',
+	'Death Wish',
+	'Death Sentence',
+	'One Down',
+]
