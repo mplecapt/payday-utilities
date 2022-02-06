@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Collapse } from 'react-collapse';
-import { UnmountClosed } from 'react-collapse/lib/UnmountClosed';
+import { UnmountClosed } from 'react-collapse';
 
 /**
  * Compnent responsible for filtering achievement list based on criteria provided
@@ -24,7 +23,7 @@ export default function PlayerProgress({progress, filterBy}) {
 						} : { name: true, desc: true },
 						exc: (filter.exclude && filter.exclude !== "") ? {
 							name: exc.test(a.displayName),
-							desc: inc.test(a.description),
+							desc: exc.test(a.description),
 						} : { name: false, desc: false },
 					}
 
@@ -33,7 +32,7 @@ export default function PlayerProgress({progress, filterBy}) {
 						(filter.removeComplete && !a.achieved) || !filter.removeComplete
 					) && (
 						// name or description includes exact search terms
-						(res.inc?.name || res.inc?.desc) && (!res.exc?.name || !res.inc?.desc)
+						(res.inc?.name || res.inc?.desc) && (!res.exc?.name || !res.exc?.desc)
 					) && (
 						// must include 4 man crew token
 						(filter.fourman === 'mustInclude' && a.tokens.some(t => t.symbol === '4')) ||
@@ -50,7 +49,13 @@ export default function PlayerProgress({progress, filterBy}) {
 						// select a difficulty
 						filter.diff === '' ||
 						(filter.diff === 'none' && !a.tokens.some(t => t.symbol === 'D')) ||
+						(filter.diff === 'any' && a.tokens.some(t => t.symbol === 'D')) ||
 						a.tokens.some(t => t.value === filter.diff)
+					) && (
+						// filter for all progression achievements (not just difficulty)
+						(filter.showProgress === 'mustInclude' && progress.contributers.includes(a.name)) ||
+						(filter.showProgress === 'exclude' && !progress.contributers.includes(a.name)) ||
+						(filter.showProgress !== 'mustInclude' && filter.showProgress !== 'exclude')
 					)
 				}).map((a, i, arr) => (
 					<Card key={a.name} data={a} isOpen={a.name === openIdx} 
@@ -69,8 +74,8 @@ export default function PlayerProgress({progress, filterBy}) {
  */
 function Card({ data, isOpen, onClick, z }) {
 	return (
-		<div className="card-top" onClick={onClick}>
-			<div className='card' style={{zIndex: z}}>
+		<div className="card-top">
+			<div className='card' onClick={onClick} style={{zIndex: z}}>
 				<div className='data-container'>
 					<img className='card-img' alt={data.name} src={(data.achieved) ? data.icon : data.icongray} />
 					<span className='card-name'>{data.displayName}</span>

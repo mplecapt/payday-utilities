@@ -65,14 +65,11 @@ const Style = {
 
 	// generate player heist completion progress
 	let heistProgress = {};
+	let progressContributers = [];
 	let heistList = [];
 	const regx = /(?!.*job.+ on)(?:(?<=Complete (?=The ))|(?<=Complete the ))(.*?)(?: job)? on the (.*?) difficulty(?:.*(One Down))*/g;
 	schema.game.availableGameStats.achievements
-		.forEach((a, i) => {
-			if (player.playerstats.achievements[i].apiname !== a.name) {
-				console.log('Arrays unaligned!');
-				return;
-			}
+		.forEach((a) => {
 			// edge cases
 			if (
 				!a.description ||
@@ -94,22 +91,22 @@ const Style = {
 				heistProgress[matches[0][1]] = {
 					name: matches[0][1],
 					complete: {
-						normal: false,
-						hard: false,
-						veryhard: false,
-						overkill: false,
-						mayhem: false,
-						deathwish: false,
-						deathsentence: false,
-						onedown: false
-					}
+						normal: 		'',
+						hard: 			'',
+						veryhard: 		'',
+						overkill: 		'',
+						mayhem: 		'',
+						deathwish: 		'',
+						deathsentence:	'',
+						onedown: 		''
+					},
 				}
 			}
 
 			// update completion for difficulty
-			const achieved = player.playerstats.achievements[i].achieved === 1;
 			const diff = (matches[0][3] ? matches[0][3] : matches[0][2]).toLowerCase().replace(' ', '');
-			heistProgress[matches[0][1]].complete[diff] = achieved;
+			heistProgress[matches[0][1]].complete[diff] = a.name;
+			progressContributers.push(a.name);
 		});
 
 	const tests = [
@@ -151,6 +148,7 @@ const Style = {
 		gameName: player.playerstats.gameName,
 		steamid: player.playerstats.steamID,
 		progress: heistProgress,
+		contributers: progressContributers,
 		heistList: heistList,
 		diffList: dif,
 		achievements: schema.game.availableGameStats.achievements.map((a, i) => {
@@ -161,7 +159,7 @@ const Style = {
 
 			// Mark heist specifier tokens
 			const tokens = heistList
-				.filter(h => (new RegExp(`${h}(?!")`, 'g').test(a.description)))
+				.filter(h => (new RegExp(`${h}(?!")`, 'gi').test(a.description)))
 				.map(h => ({ symbol: 'H', value: h }));
 
 			// difficulty specifier tokens

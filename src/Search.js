@@ -8,6 +8,7 @@ const INIT_STATE = {
 	fourman: 'canInclude',
 	diff: '',
 	heist: '',
+	showProgress: 'canInclude',
 }
 
 export default function SearchForm({progress}) {
@@ -26,10 +27,16 @@ export default function SearchForm({progress}) {
 				<Form className="query-form">
 					<div>
 						<label>Includes <Field name='include' type='text' /></label><br />
-						<label>Excludes <Field name='exclude' type='text' /></label>
+						<label>Excludes <Field name='exclude' type='text' /></label><br />
+						<label><Field type='checkbox' name='removeComplete' /> Incomplete Only</label>
 					</div>
 					<div>
-						<label><Field type='checkbox' name='removeComplete' /> Incomplete Only</label>
+						<div>
+							<label>Show Heist Completion: </label>
+							<label><Field type='radio' name='showProgress' value='mustInclude' /> True</label>
+							<label><Field type='radio' name='showProgress' value='exclude' /> False</label>
+							<label><Field type='radio' name='showProgress' value='canInclude' hidden/> <span className="clear">&times;</span></label>
+						</div>
 						<div>
 							<label>Requires 4 Players: </label>
 							<label><Field type='radio' name='fourman' value='mustInclude' /> True</label>
@@ -47,6 +54,7 @@ export default function SearchForm({progress}) {
 							Difficulty <Field as='select' name='diff'>
 								<option value='' />
 								<option value='none'>~Unspecified~</option>
+								<option value='any'>~Any~</option>
 								{progress.diffList.map(d => (<option value={d} key={d}>{d}</option>))}
 							</Field>
 						</label>
