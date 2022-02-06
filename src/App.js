@@ -2,7 +2,7 @@ import './App.css';
 import crimenet from './crimenet.jpg';
 import { API } from 'aws-amplify';
 import API_KEY from './steam';
-import SearchForm from './Search2';
+import SearchForm from './Search';
 import { useEffect, useState } from 'react';
 
 const user = '76561198049201876';
@@ -43,6 +43,11 @@ const Style = {
 
 /**
  * Fetch the player achievements and game schema from the SteamAPI using aws-amplify REST calls
+ * Makes two calls to steam API: GetSchemaForGame and GetPlayerAchievements
+ * Formats data, and tags data with identifying flags on initial load
+ * 
+ * Does all processing whenver site is reloaded, so data is always fresh, but requires the browser
+ * to do a lot of processing
  * @param {string} userid the steamid used to request data
  * @returns a formatted object representing player achievement progress
  */
@@ -181,6 +186,8 @@ const Style = {
 					} return false;
 				})
 			}
+
+			if (!a.description) a.description = '??? Hidden Achievement';
 
 			return {
 				name: a.name,

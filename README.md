@@ -13,11 +13,11 @@ Store the key using this command from the src folder (replace *%API_KEY%* with t
 
 ## Task List
 - [ ] Style the form
-- [ ] Style the tokens
+- [x] Style the tokens
 - [ ] Add more tokens
-- [ ] Add exlusion search
-- [ ] Add Heist selector
-- [ ] Add difficulty filters
+- [x] Add exlusion search
+- [x] Add Heist selector
+- [x] Add difficulty filters
 - [ ] Make difficulty completion tracker
 - [ ] Allow for searching other steamids
 - [ ] Add filter for secret achievement

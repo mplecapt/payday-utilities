@@ -18,45 +18,6 @@
 	padding: 10px;
 }
 
- /**
-  *
-  */
-.tooltip {
-	position: relative;
-	display: inline-block;
-}
-
-.tooltip .tooltiptext {
-	visibility: hidden;
-	width: 75vw;
-	color: #fff;
-	text-align: left;
-	border-radius: 6px;
-	padding: 5px 5px 10px 5px;
-	position: absolute;
-	z-index: 1;
-	top: 50%;
-	left: 120%;
-	margin-top: -2.5em;
-	background-color: #222;
-	border: 1px dotted white;
-}
-
-.tooltip .tooltiptext::after {
-	content: "";
-	position: absolute;
-	right: 100%;
-	top: 50%;
-	margin-top: -5px;
-	border-width: 8px;
-	border-style: solid;
-	border-color: transparent #fff transparent transparent;
-}
-
-.tooltip:hover .tooltiptext {
-	visibility: visible;
-}
-
 /**
  * Achievement Progress List
  */
@@ -69,19 +30,28 @@
 	justify-content: center;
 }
 
+.card-top {
+	width: 90vw;
+	margin: 10px;
+}
+
 .card {
 	/* sizing */
-	width: 90vw;
 	height: 4.5em;
-	margin: 10px;
 	padding: 10px;
+	position: relative;
 	/* appearance */
 	border-radius: 6px;
 	background-color: rgb(31, 43, 59);
 	color: white;
 	border: 1px dotted #aaa;
 	display: flex;
-	
+	transition: background-color 0.3s ease-out;
+	cursor: pointer;
+}
+
+.card:hover {
+	background-color: rgb(35, 49, 68);
 }
 
 .data-container {
@@ -98,16 +68,9 @@
 }
 
 .card-img {
+	grid-area: icon;
 	height: 100%;
 	width: auto;
-}
-
-.card .tooltip {
-	grid-area: icon;
-	width: 100%;
-	height: 100%;
-	display: flex;
-	justify-content: center;
 }
 
 .card-name {
@@ -119,6 +82,27 @@
 .card-date {
 	grid-area: date;
 	font-size: smaller;
+}
+
+/* Dropdown */
+.collapse-container {
+	position: relative;
+	top: -6px;
+}
+
+.ReactCollapse--collapse {
+	transition: height 500ms;
+	position: absolute;
+	width: calc(90vw - 2px);
+	background-color:#222;
+	border: 1px dotted #aaa;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.61);
+}
+
+.ReactCollapse--content {
+	margin: 6px;
 }
 
 /* Tokens */
@@ -145,6 +129,7 @@
 	justify-content: center;
 	cursor: default;
 	position: relative;
+	transition: background-color 0.25s ease-out;
 }
 
 .token .tokentext {
@@ -184,20 +169,26 @@
 }
 
 @media only screen and (min-width: 768px) {
-	.card {
+	.card-top {
 		width: 45vw;
 	}
 	.card .tooltiptext {
 		width: 35vw;
 	}
+	.ReactCollapse--collapse {
+		width: calc(45vw - 2px);
+	}
 }
 
 @media only screen and (min-width: 1920px) {
-	.card {
+	.card-top {
 		width: 28vw;
 	}
 	.card .tooltiptext {
 		width: 20vw;
+	}
+	.ReactCollapse--collapse {
+		width: calc(28vw - 2px);
 	}
 }
 

@@ -1,5 +1,15 @@
+import { useState } from 'react';
+import { Collapse } from 'react-collapse';
+import { UnmountClosed } from 'react-collapse/lib/UnmountClosed';
 
+/**
+ * Compnent responsible for filtering achievement list based on criteria provided
+ * @param {Object} progress Object containing player data 
+ * @param {Object} filterBy Object containing criteria to filter output with
+ */
 export default function PlayerProgress({progress, filterBy}) {
+	const [openIdx, setOpenIdx] = useState();
+
 	return (
 		<div className='progress-list'>
 			{progress.achievements.filter(a => {
@@ -42,34 +52,48 @@ export default function PlayerProgress({progress, filterBy}) {
 						(filter.diff === 'none' && !a.tokens.some(t => t.symbol === 'D')) ||
 						a.tokens.some(t => t.value === filter.diff)
 					)
-				}).map(a => (
-					<Card key={a.name} data={a} />
+				}).map((a, i, arr) => (
+					<Card key={a.name} data={a} isOpen={a.name === openIdx} 
+						onClick={()=>setOpenIdx(a.name === openIdx ? null : a.name)} 
+						z={(arr.length - i) * 2}
+					/>
 				))}
 		</div>
 	)
 }
 
-function Card({ data }) {
+/**
+ * Component that displays specific achievement data
+ * @param {Object} achievement data 
+ * @returns 
+ */
+function Card({ data, isOpen, onClick, z }) {
 	return (
-		<div className='card'>
-			<div className='data-container'>
-				<div className='tooltip'>
+		<div className="card-top" onClick={onClick}>
+			<div className='card' style={{zIndex: z}}>
+				<div className='data-container'>
 					<img className='card-img' alt={data.name} src={(data.achieved) ? data.icon : data.icongray} />
-					{data.description && <span className='tooltiptext'>{data.description}</span>}
+					<span className='card-name'>{data.displayName}</span>
+					<span className='card-date'>{data.achieved && (new Date(data.unlocktime * 1000)).toLocaleString()}</span>
 				</div>
-				<span className='card-name'>{data.displayName}</span>
-				<span className='card-date'>{data.achieved && (new Date(data.unlocktime * 1000)).toLocaleString()}</span>
+				{data.tokens && data.tokens.length > 0 && (
+					<div className='token-container'>
+						{data.tokens.map((t, i) => (
+							<span className='token' key={i}>
+								{t.symbol}
+								<span className='tokentext'>{t.value}</span>
+							</span>
+						))}
+					</div>
+				)}
 			</div>
-			{data.tokens && data.tokens.length > 0 && (
-				<div className='token-container'>
-					{data.tokens.map((t, i) => (
-						<span className='token' key={i}>
-							{t.symbol}
-							<span className='tokentext'>{t.value}</span>
-						</span>
-					))}
-				</div>
-			)}
-		</div>
+			{data.description && 
+			<div className='collapse-container' style={{zIndex: z-1}}>
+				<UnmountClosed isOpened={isOpen}>
+					{data.description}
+				</UnmountClosed>
+			</div>
+			}
+		</div>	
 	)
 }

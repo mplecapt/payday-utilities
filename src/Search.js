@@ -1,78 +1,66 @@
-import { Component } from "react"
-import PlayerProgress from './PlayerProgress';
+import PlayerProgress from "./PlayerProgress";
+import { Formik, Form, Field } from "formik";
 
 const INIT_STATE = {
-	search: '',
+	include: '',
+	exclude: '',
 	removeComplete: false,
 	fourman: 'canInclude',
+	diff: '',
+	heist: '',
 }
 
-export default class SearchForm extends Component {
-	constructor(props) {
-		super(props);
-		this.state = INIT_STATE;
+export default function SearchForm({progress}) {
+	return (
+		<Formik
+			initialValues={INIT_STATE}
+			validate={(values) => {
 
-		this.handleChange = this.handleChange.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
-		this.handleReset = this.handleReset.bind(this);
-	}
-
-	handleChange(event) {
-		const target = event.target;
-		let value = target.type === 'checkbox' && target.name !== 'fourman' ? target.checked : target.value;
-		const name = target.name;
-
-		if (name === 'fourman' && value === this.state.fourman) 
-			value = 'canInclude';
-
-		this.setState({
-			[name]: value
-		});
-	}
-
-	handleReset(event) {
-		this.setState(INIT_STATE);
-		event.preventDefault();
-	}
-
-	handleSubmit(event) {
-		alert(JSON.stringify(this.state));
-		event.preventDefault();
-	}
-
-	render() {
-		return (
-			<>
-				<form onSubmit={this.handleSubmit} style={{color: 'white'}}>
+			}}
+			onSubmit={(values) => {
+				alert(JSON.stringify(values));
+			}}
+		>
+		{({values}) => (
+			<div className="search-container">
+				<Form className="query-form">
 					<div>
-						<input type='text' name='search' value={this.state.search} onChange={this.handleChange} placeholder="Search..." />
+						<label>Includes <Field name='include' type='text' /></label><br />
+						<label>Excludes <Field name='exclude' type='text' /></label>
 					</div>
 					<div>
+						<label><Field type='checkbox' name='removeComplete' /> Incomplete Only</label>
+						<div>
+							<label>Requires 4 Players: </label>
+							<label><Field type='radio' name='fourman' value='mustInclude' /> True</label>
+							<label><Field type='radio' name='fourman' value='exclude' /> False</label>
+							<label><Field type='radio' name='fourman' value='canInclude' hidden /> 	<span className="clear">&times;</span></label>
+						</div>
 						<label>
-							<input type='checkbox' name='removeComplete' checked={this.state.removeComplete} onChange={this.handleChange} />
-							Incomplete Only
+							Heist <Field as='select' name='heist'>
+								<option value='' />
+								<option value='none'>~Unspecified~</option>
+								{progress.heistList.map(h => (<option value={h} key={h}>{h}</option>))}
+							</Field>
+						</label><br/>
+						<label>
+							Difficulty <Field as='select' name='diff'>
+								<option value='' />
+								<option value='none'>~Unspecified~</option>
+								{progress.diffList.map(d => (<option value={d} key={d}>{d}</option>))}
+							</Field>
 						</label>
 					</div>
 					<div>
-						<label>4 Man Crews: </label>
-						<label>
-							<input type='checkbox' name='fourman' value='mustInclude' checked={this.state.fourman === 'mustInclude'} onChange={this.handleChange} />
-							Must Include
-						</label>
-						<label>
-							<input type='checkbox' name='fourman' value='exclude' checked={this.state.fourman === 'exclude'} onChange={this.handleChange} />
-							Exclude
-						</label>
-					</div>
-					<div>
-						<button type='reset' onClick={this.handleReset}>Reset</button>
+						<button type='reset'>Reset</button><br/>
 						<button type='submit'>Submit</button>
 					</div>
-				</form>
+				</Form>
 				<div className="scrollarea">
-					<PlayerProgress steamid={this.props.steamid} filterBy={this.state} />
+					<PlayerProgress progress={progress} filterBy={values} />
 				</div>
-			</>
-		)
-	}
+			</div>
+		)}
+		</Formik>
+	)
 }
