@@ -1,9 +1,36 @@
+body {
+	overflow: hidden;
+}
+
+nav {
+	display: flex;
+	margin: 0;
+	padding: 6px;
+	width: 100vw;
+	background-color: rgb(35, 49, 68);
+}
+a {
+	text-decoration: none;
+}
+
+li {
+	color: white;
+	margin: 0 0.8rem;
+	font-size: 1.3rem;
+	position: relative;
+	list-style: none;
+}
+
+.current li {
+	border-bottom: 2px solid black;
+}
+
 /**
  *
  */
 .search-container {
 	width: 100vw;
-	height: 100vh;
+	height: 100%;
 	display: grid;
 	grid-template-rows: auto 1fr;
 	grid-template-areas: "search" "results";

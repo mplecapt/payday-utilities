@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { HashRouter } from 'react-router-dom';
 
 import Amplify from 'aws-amplify';
 import config from './aws-exports';
@@ -9,7 +10,9 @@ Amplify.configure(config);
 
 ReactDOM.render(
 	<React.StrictMode>
-		<App />
+		<HashRouter>
+			<App />
+		</HashRouter>
 	</React.StrictMode>,
 	document.getElementById('root')
 );
